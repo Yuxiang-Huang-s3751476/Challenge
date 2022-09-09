@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.dao.GoodsDao">
+
+    <resultMap type="com.example.springboot.model.Goods" id="GoodsMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="goosdesc" column="goosdesc" jdbcType="VARCHAR"/>
+        <result property="imagepath" column="imagePath" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <select id="queryById" resultMap="GoodsMap">
+        select id,
+               title, goosdesc, imagePath, price
+        from goods
+        where id = #{id}
+    </select>
+
+
+    <select id="queryAllByLimit" resultMap="GoodsMap">
+        select
+        id, title, goosdesc, imagePath, price
+        from goods
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="goosdesc != null and goosdesc != ''">
+                and goosdesc = #{goosdesc}
+            </if>
+            <if test="imagepath != null and imagepath != ''">
+                and imagePath = #{imagepath}
+            </if>
+            <if test="price != null and price != ''">
+                and price = #{price}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from goods
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="goosdesc != null and goosdesc != ''">
+                and goosdesc = #{goosdesc}
+            </if>
+            <if test="imagepath != null and imagepath != ''">
+                and imagePath = #{imagepath}
+            </if>
+            <if test="price != null and price != ''">
+                and price = #{price}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into goods(title, goosdesc, imagePath, price)
+        values (#{title}, #{goosdesc}, #{imagepath}, #{price})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into goods(title, goosdesc, imagePath, price)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.goosdesc}, #{entity.imagepath}, #{entity.price})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into goods(title, goosdesc, imagePath, price)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.goosdesc}, #{entity.imagepath}, #{entity.price})
+        </foreach>
+        on duplicate key update
+        title = values(title),
+        goosdesc = values(goosdesc),
+        imagePath = values(imagePath),
+        price = values(price)
+    </insert>
+
+
+    <update id="update">
+        update goods
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="goosdesc != null and goosdesc != ''">
+                goosdesc = #{goosdesc},
+            </if>
+            <if test="imagepath != null and imagepath != ''">
+                imagePath = #{imagepath},
+            </if>
+            <if test="price != null and price != ''">
+                price = #{price},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+    <delete id="deleteById">
+        delete
+        from goods
+        where id = #{id}
+    </delete>
+
+</mapper>
+
